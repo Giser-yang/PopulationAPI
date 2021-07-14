@@ -1,19 +1,24 @@
 import binascii
 import datetime
+import json
+import time as time1
 
 import pymssql
 import rsa
+from django.core import serializers
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt.settings import api_settings
-
+from django.db import models
 
 # 超级用户 test01 JSKJ9595
 # Create your views here.
 # 取出数据加密公钥
+from DKPop import models
+
 with open('datapublic.pem', 'rb') as file_pub:
     f_pub = file_pub.read()
     datapubkey = rsa.PublicKey.load_pkcs1(f_pub)
@@ -128,3 +133,26 @@ def Dataencry(dictlist):
     # bytes转str
     datastr = bytes.decode(asc1)
     return datastr
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+@authentication_classes((JSONWebTokenAuthentication,))
+def query_cqrk(request):
+    timeStamp = int(request.POST['timestamp'])
+    code = request.POST['code']
+    timeArray = time1.localtime(timeStamp)
+    Time = time1.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+    data = {}
+    rk = models.Cqdkpopulation.objects.filter(time=Time, code=code).values()
+    # data['result'] = json.loads(serializers.serialize("json", rk))
+    data = list(rk)
+    data = Dataencry(data)
+    # print(data)
+    return JsonResponse(
+        {
+            'code': 200,
+            'message': '请求成功',
+            'data': data
+        }
+    )

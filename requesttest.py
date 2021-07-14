@@ -5,11 +5,16 @@ import rsa
 import binascii
 
 header = {
-    'Authorization': 'JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InRlc3QwMSIsImV4cCI6MTYyNjIzMzIyOCwiZW1haWwiOiIifQ.zpXFDD0o-Oz3Tz9F2TddfuksLXhm0ENAZ49aFhg42uw'
+    'Authorization': 'JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InRlc3QwMSIsImV4cCI6MTYyNjMyMjI4MiwiZW1haWwiOiIifQ.wQMDlGcxmMWyB9GF8DJMHhvIh9ISu4lA_Vk0e4QWB1Y'
 }
-url1 = 'http://127.0.0.1:8005/info/dkinfo/'
-response = requests.get(url=url1, headers=header)
-datadict = json.loads(response.text)
+# url1 = 'http://127.0.0.1:8005/info/dkinfo/'
+url1 = 'http://127.0.0.1:8005/info/getjson/'
+data = {
+    'timestamp': '1620388800',
+    'code': 'F19309084'
+}
+response = requests.post(url=url1, headers=header, data=data)
+datadict = eval(response.text)
 print(datadict)
 
 data2 = (datadict['data'])

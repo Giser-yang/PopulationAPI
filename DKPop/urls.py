@@ -7,4 +7,5 @@ urlpatterns = [
     # path('gettoken/', views.user_login),
     path('exampleinfo/', views.get_info),
     path('dkinfo/', views.dkdata),
+    path('getjson/', views.query_cqrk)
 ]
